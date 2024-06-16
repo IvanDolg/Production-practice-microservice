@@ -2,6 +2,7 @@ package com.practice.employeeservice.service.impl;
 
 import com.practice.employeeservice.dto.EmployeeDto;
 import com.practice.employeeservice.entity.Employee;
+import com.practice.employeeservice.mapper.AutoEmployeeMapper;
 import com.practice.employeeservice.repository.EmployeeRepository;
 import com.practice.employeeservice.service.EmployeeService;
 import lombok.AllArgsConstructor;
@@ -15,34 +16,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
-        Employee employee = new Employee(
-                employeeDto.getId(),
-                employeeDto.getFirstName(),
-                employeeDto.getLastName(),
-                employeeDto.getEmail()
-        );
-
+        Employee employee = AutoEmployeeMapper.MAPPER.mapToEmployee(employeeDto);
         Employee savedEmployee = employeeRepository.save(employee);
 
-        return new EmployeeDto(
-                savedEmployee.getId(),
-                savedEmployee.getFirstName(),
-                savedEmployee.getLastName(),
-                savedEmployee.getEmail()
-        );
+        return AutoEmployeeMapper.MAPPER.mapToEmployeeDto(savedEmployee);
     }
 
     @Override
     public EmployeeDto getEmployeeById(Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId).get();
 
-        EmployeeDto employeeDto = new EmployeeDto(
-                employee.getId(),
-                employee.getFirstName(),
-                employee.getLastName(),
-                employee.getEmail()
-        );
-
-        return employeeDto;
+        return AutoEmployeeMapper.MAPPER.mapToEmployeeDto(employee);
     }
 }
