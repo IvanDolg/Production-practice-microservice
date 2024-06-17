@@ -8,8 +8,10 @@ import com.practice.employeeservice.exception.EmailAlreadyExistsException;
 import com.practice.employeeservice.exception.RecurseNotFoundException;
 import com.practice.employeeservice.mapper.AutoEmployeeMapper;
 import com.practice.employeeservice.repository.EmployeeRepository;
+import com.practice.employeeservice.service.APIClient;
 import com.practice.employeeservice.service.EmployeeService;
 import lombok.AllArgsConstructor;
+import lombok.val;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -24,7 +26,8 @@ public class EmployeeServiceImpl implements EmployeeService {
     private  EmployeeRepository employeeRepository;
 
     //private RestTemplate restTemplate;
-    private WebClient webClient;
+    //private WebClient webClient;
+    private APIClient apiClient;
 
     @Override
     public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
@@ -52,11 +55,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 //
 //        DepartmentDto departmentDto = response.getBody();
 
-        DepartmentDto departmentDto =webClient.get()
-                .uri("http://localhost:8080/api/departments/" + employee.getDepartmentCode())
-                .retrieve()
-                .bodyToMono(DepartmentDto.class)
-                .block();
+//        DepartmentDto departmentDto =webClient.get()
+//                .uri("http://localhost:8080/api/departments/" + employee.getDepartmentCode())
+//                .retrieve()
+//                .bodyToMono(DepartmentDto.class)
+//                .block();
+
+        DepartmentDto departmentDto = apiClient.getDepartmentByCode(employee.getDepartmentCode());
 
         EmployeeDto employeeDto = AutoEmployeeMapper.MAPPER.mapToEmployeeDto(employee);
 
