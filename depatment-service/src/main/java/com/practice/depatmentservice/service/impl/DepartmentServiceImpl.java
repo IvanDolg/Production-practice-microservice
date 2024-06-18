@@ -5,9 +5,11 @@ import com.practice.depatmentservice.entity.Department;
 import com.practice.depatmentservice.exception.DepartmentCodeAlreadyExistsException;
 import com.practice.depatmentservice.exception.RecurseNotFoundException;
 import com.practice.depatmentservice.mapper.AutoDepartmentMapper;
+import com.practice.depatmentservice.mapper.DepartmentMapper;
 import com.practice.depatmentservice.repository.DepartmentRepository;
 import com.practice.depatmentservice.service.DepartmentService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -34,10 +36,13 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public DepartmentDto getDepartmentByCode(String departmentCode) {
+
+
         Department department = departmentRepository.findByDepartmentCode(departmentCode).orElseThrow(
                 () -> new RecurseNotFoundException("Department", "departmentCode", departmentCode)
         );
 
-        return AutoDepartmentMapper.MAPPER.mapToDepartmentDto(department);
+       // return AutoDepartmentMapper.MAPPER.mapToDepartmentDto(department);
+        return DepartmentMapper.mapToDepartmentDto(department);
     }
 }
