@@ -24,9 +24,6 @@ import java.util.Optional;
 public class EmployeeServiceImpl implements EmployeeService {
 
     private  EmployeeRepository employeeRepository;
-
-    //private RestTemplate restTemplate;
-    //private WebClient webClient;
     private APIClient apiClient;
 
     @Override
@@ -49,17 +46,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee employee = employeeRepository.findById(employeeId).orElseThrow(
                 () -> new RecurseNotFoundException("Employee", "id", employeeId)
         );
-
-//        ResponseEntity <DepartmentDto> response = restTemplate.getForEntity("http://localhost:8080/api/departments" +
-//                employee.getDepartmentCode(), DepartmentDto.class);
-//
-//        DepartmentDto departmentDto = response.getBody();
-
-//        DepartmentDto departmentDto =webClient.get()
-//                .uri("http://localhost:8080/api/departments/" + employee.getDepartmentCode())
-//                .retrieve()
-//                .bodyToMono(DepartmentDto.class)
-//                .block();
 
         DepartmentDto departmentDto = apiClient.getDepartmentByCode(employee.getDepartmentCode());
 
