@@ -1,4 +1,4 @@
-package com.practice.employeeservice;
+package com.practice.depatmentservice;
 
 import io.swagger.v3.oas.annotations.ExternalDocumentation;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
@@ -8,14 +8,13 @@ import io.swagger.v3.oas.annotations.info.License;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 
-
+@SpringBootApplication
 @OpenAPIDefinition(
 		info = @Info(
-				title = "Employee Rest API",
-				description = "Employee Rest API Documentation",
+				title = "Department Rest API",
+				description = "Department Rest API Documentation",
 				version = "v1.0",
 				contact = @Contact(
 						name = "Ivan",
@@ -30,16 +29,14 @@ import org.springframework.context.annotation.Bean;
 				description = "Spring Boot User Management Documentation"
 		)
 )
-@SpringBootApplication
-@EnableFeignClients
-public class EmployeeServiceApplication {
+public class DepartmentServiceApplication {
 	@Bean
 	public ModelMapper modelMapper(){
 		return new ModelMapper();
 	}
 
 	public static void main(String[] args) {
-		SpringApplication.run(EmployeeServiceApplication.class, args);
+		SpringApplication.run(DepartmentServiceApplication.class, args);
 	}
 
 }
