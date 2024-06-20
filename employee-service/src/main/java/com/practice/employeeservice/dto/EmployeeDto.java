@@ -35,4 +35,5 @@ public class EmployeeDto {
             description = "Code of the employee department"
     )
     private String departmentCode;
+    private String organizationCode;
 }

@@ -3,6 +3,7 @@ package com.practice.employeeservice.service.impl;
 import com.practice.employeeservice.dto.APIResponseDto;
 import com.practice.employeeservice.dto.DepartmentDto;
 import com.practice.employeeservice.dto.EmployeeDto;
+import com.practice.employeeservice.dto.OrganizationDto;
 import com.practice.employeeservice.entity.Employee;
 import com.practice.employeeservice.exception.EmailAlreadyExistsException;
 import com.practice.employeeservice.exception.RecurseNotFoundException;
@@ -69,10 +70,18 @@ public class EmployeeServiceImpl implements EmployeeService {
 
         //DepartmentDto departmentDto = apiClient.getDepartmentByCode(employee.getDepartmentCode());
 
+        OrganizationDto organizationDto =webClient.get()
+                .uri("http://localhost:8083/api/organizations/" + employee.getOrganizationCode())
+                .retrieve()
+                .bodyToMono(OrganizationDto.class)
+                .block();
+
         EmployeeDto employeeDto = AutoEmployeeMapper.MAPPER.mapToEmployeeDto(employee);
+
         APIResponseDto apiResponseDto = new APIResponseDto();
         apiResponseDto.setEmployee(employeeDto);
         apiResponseDto.setDepartment(departmentDto);
+        apiResponseDto.setOrganization(organizationDto);
         return apiResponseDto;
     }
 
