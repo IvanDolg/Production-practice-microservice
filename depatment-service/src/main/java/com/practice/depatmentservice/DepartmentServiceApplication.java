@@ -10,11 +10,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
-@SpringBootApplication
 @OpenAPIDefinition(
 		info = @Info(
-				title = "Department Rest API",
-				description = "Department Rest API Documentation",
+				title = "Department Service Rest API",
+				description = "Department Service Rest API Documentation",
 				version = "v1.0",
 				contact = @Contact(
 						name = "Ivan",
@@ -29,6 +28,7 @@ import org.springframework.context.annotation.Bean;
 				description = "Spring Boot User Management Documentation"
 		)
 )
+@SpringBootApplication
 public class DepartmentServiceApplication {
 	@Bean
 	public ModelMapper modelMapper(){
