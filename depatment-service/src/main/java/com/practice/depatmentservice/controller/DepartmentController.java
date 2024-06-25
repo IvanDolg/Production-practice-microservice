@@ -52,4 +52,39 @@ public class DepartmentController {
         DepartmentDto departmentDto = departmentService.getDepartmentByCode(departmentCode);
         return new ResponseEntity<>(departmentDto, HttpStatus.OK);
     }
+
+    @Operation(
+            summary = "Update department",
+            description = "Used to update department in db"
+    )
+    @ApiResponses(
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Department updated"
+            )
+    )
+    @PutMapping("/{department-code}")
+    public ResponseEntity<DepartmentDto> updateDepartment(
+            @RequestBody DepartmentDto departmentDto,
+            @PathVariable ("department-code" ) String departmentCode) {
+
+        DepartmentDto updateDepartment = departmentService.updateDepartment(departmentDto, departmentCode);
+        return new ResponseEntity<>(updateDepartment, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Delete department",
+            description = "Used to delete department from db"
+    )
+    @ApiResponses(
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Department deleted"
+            )
+    )
+    @DeleteMapping("/{department-code}")
+    public ResponseEntity<Void> deleteDepartment(@PathVariable("department-code" ) String departmentCode) {
+        departmentService.deleteDepartment(departmentCode);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

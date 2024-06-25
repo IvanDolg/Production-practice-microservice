@@ -34,12 +34,31 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public DepartmentDto getDepartmentByCode(String departmentCode) {
-
-
         Department department = departmentRepository.findByDepartmentCode(departmentCode).orElseThrow(
                 () -> new RecurseNotFoundException("Department", "departmentCode", departmentCode)
         );
 
        return AutoDepartmentMapper.MAPPER.mapToDepartmentDto(department);
+    }
+
+    @Override
+    public DepartmentDto updateDepartment(DepartmentDto departmentDto, String departmentCode) {
+        Department existingDepartment = departmentRepository.findByDepartmentCode(departmentCode).orElseThrow(
+                () -> new RecurseNotFoundException("Department", "departmentCode", departmentCode)
+        );
+
+        existingDepartment.setDepartmentName(departmentDto.getDepartmentName());
+        existingDepartment.setDepartmentDescription(departmentDto.getDepartmentDescription());
+        existingDepartment.setDepartmentCode(departmentDto.getDepartmentCode());
+
+        return AutoDepartmentMapper.MAPPER.mapToDepartmentDto(departmentRepository.save(existingDepartment));
+    }
+
+    @Override
+    public void deleteDepartment(String departmentCode) {
+        Department department = departmentRepository.findByDepartmentCode(departmentCode).orElseThrow(
+                () -> new RecurseNotFoundException("Department", "departmentCode", departmentCode)
+        );
+        departmentRepository.delete(department);
     }
 }
