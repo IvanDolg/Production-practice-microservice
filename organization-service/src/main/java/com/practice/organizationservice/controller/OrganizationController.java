@@ -53,4 +53,39 @@ public class OrganizationController {
         OrganizationDto organizationDto = organizationService.getOrganizationByCode(organizationCode);
         return ResponseEntity.ok(organizationDto);
     }
+
+    @Operation(
+            summary = "Update organization by id",
+            description = "Used to update organization in db by id"
+    )
+    @ApiResponses(
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Organization updated"
+            )
+    )
+    @PutMapping("{organization-code}")
+    private ResponseEntity<OrganizationDto> updateOrganization(
+            @RequestBody OrganizationDto organizationDto,
+            @PathVariable ("organization-code" ) String organizationCode) {
+        OrganizationDto updatedOrganization = organizationService.updateOrganization(organizationDto, organizationCode);
+        return ResponseEntity.ok(updatedOrganization);
+    }
+
+    @Operation(
+            summary = "Delete organization by id",
+            description = "Used to delete organization from db by id"
+    )
+    @ApiResponses(
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Organization deleted"
+            )
+    )
+    @DeleteMapping("{organization-code}")
+    private ResponseEntity<OrganizationDto> deleteOrganization(
+            @PathVariable ("organization-code") String organizationCode) {
+        organizationService.deleteOrganization(organizationCode);
+        return ResponseEntity.ok().build();
+    }
 }

@@ -23,7 +23,27 @@ public class OrganizationServiceImpl implements OrganizationService {
 
     @Override
     public OrganizationDto getOrganizationByCode(String organizationCode) {
-        Organization organization = organizationRepository.findByOrganizationCode(organizationCode);
+        Organization organization = organizationRepository.findByOrganizationCode(organizationCode)
+                .orElseThrow(() -> new RuntimeException("Organization not found"));
         return AutoOrganizationMapper.MAPPER.mapToOrganizationDto(organization);
+    }
+
+    @Override
+    public OrganizationDto updateOrganization(OrganizationDto organizationDto, String organizationCode) {
+        Organization existingOrganization = organizationRepository.findByOrganizationCode(organizationCode)
+                .orElseThrow(() -> new RuntimeException("Organization not found"));
+
+        existingOrganization.setOrganizationName(organizationDto.getOrganizationName());
+        existingOrganization.setOrganizationDescription(organizationDto.getOrganizationDescription());
+        existingOrganization.setOrganizationCode(organizationDto.getOrganizationCode());
+
+        return AutoOrganizationMapper.MAPPER.mapToOrganizationDto(organizationRepository.save(existingOrganization));
+    }
+
+    @Override
+    public void deleteOrganization(String organizationCode) {
+        Organization organization = organizationRepository.findByOrganizationCode(organizationCode)
+                .orElseThrow(() -> new RuntimeException("Organization not found"));
+        organizationRepository.delete(organization);
     }
 }
