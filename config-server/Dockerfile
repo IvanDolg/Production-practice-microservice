@@ -1,8 +1,7 @@
-# Используйте базовый образ Java 17
 FROM openjdk:17-jdk-slim
 
-# Скопируйте JAR-файл в контейнер
 COPY /target/*.jar app.jar
 
-# Запустите приложение
+EXPOSE 8888
+
 CMD ["java", "-jar", "app.jar"]
