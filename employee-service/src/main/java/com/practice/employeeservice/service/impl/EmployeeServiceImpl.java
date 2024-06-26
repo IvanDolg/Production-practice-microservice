@@ -85,6 +85,30 @@ public class EmployeeServiceImpl implements EmployeeService {
         return apiResponseDto;
     }
 
+    @Override
+    public EmployeeDto updateEmployee(EmployeeDto employeeDto, Long employeeId) {
+        Employee existingEmployee = employeeRepository.findById(employeeId).orElseThrow(
+                () -> new RecurseNotFoundException("Employee", "id", employeeId)
+        );
+        existingEmployee.setFirstName(employeeDto.getFirstName());
+        existingEmployee.setLastName(employeeDto.getLastName());
+        existingEmployee.setOrganizationCode(employeeDto.getOrganizationCode());
+        existingEmployee.setEmail(employeeDto.getEmail());
+        existingEmployee.setDepartmentCode(employeeDto.getDepartmentCode());
+
+        Employee updatedEmployee = employeeRepository.save(existingEmployee);
+
+        return AutoEmployeeMapper.MAPPER.mapToEmployeeDto(updatedEmployee);
+    }
+
+    @Override
+    public void deleteEmployee(Long employeeId) {
+        Employee employee = employeeRepository.findById(employeeId).orElseThrow(
+                () -> new RecurseNotFoundException("Employee", "id", employeeId)
+        );
+        employeeRepository.delete(employee);
+    }
+
     public APIResponseDto getDefaultDepartment(Long employeeId, Exception exception) {
 
         LOGGER.info("instance getDefaultDepartment() method");

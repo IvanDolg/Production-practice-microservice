@@ -54,4 +54,37 @@ public class EmployeeController {
         return new ResponseEntity<>(apiResponseDto, HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Update employee",
+            description = "Used to update employee in a database"
+    )
+    @ApiResponses(
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Employee updated"
+            )
+    )
+    @PutMapping("/{id}")
+    public ResponseEntity<EmployeeDto> updateEmployee(
+            @RequestBody EmployeeDto employeeDto,
+            @PathVariable("id") Long employeeId) {
+        EmployeeDto updatedEmployee = employeeService.updateEmployee(employeeDto, employeeId);
+        return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
+    }
+
+    @Operation(
+            summary = "Delete employee",
+            description = "Used to delete employee from a database"
+    )
+    @ApiResponses(
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "Employee deleted"
+            )
+    )
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteEmployee(@PathVariable("id") Long employeeId) {
+        employeeService.deleteEmployee(employeeId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }
