@@ -1,7 +1,5 @@
-FROM openjdk:17-jdk-slim
+FROM openjdk:17-jdk-alpine
 
-COPY /target/*.jar app.jar
+COPY target/employee-service-0.0.1-SNAPSHOT.jar app.jar
 
-EXPOSE 8081
-
-CMD ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]

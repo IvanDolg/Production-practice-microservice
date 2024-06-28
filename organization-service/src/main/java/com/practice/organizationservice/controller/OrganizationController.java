@@ -11,6 +11,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
+
 @Tag(
         name = "Organization Controller",
         description = "Organization controller exposes rest apis for organization-service"
@@ -51,6 +53,12 @@ public class OrganizationController {
     @GetMapping("{organization-code}")
     private ResponseEntity<OrganizationDto> getOrganizationByCode(@PathVariable ("organization-code" ) String organizationCode) {
         OrganizationDto organizationDto = organizationService.getOrganizationByCode(organizationCode);
+        return ResponseEntity.ok(organizationDto);
+    }
+
+    @GetMapping
+    private ResponseEntity<OrganizationDto> getOrganizations() {
+        OrganizationDto organizationDto = new OrganizationDto(1L, "name", "desc", "code", LocalDateTime.now());
         return ResponseEntity.ok(organizationDto);
     }
 
