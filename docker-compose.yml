@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  department-database:
+    image: postgres:15
+    environment:
+      - POSTGRES_DB=department_db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=root
+    volumes:
+      - department-postgres-data:/var/lib/postgresql/data
+    networks:
+      - microservices-network
+
+  service-registry:
+    build:
+      context: ./service-registry
+    ports:
+      - "8761:8761"
+    networks:
+      - microservices-network
+    environment:
+      SERVER_PORT: 8761
+
+  api-gateway:
+    build:
+      context: ./api-gateway
+    ports:
+      - "9191:9191"
+    networks:
+      - microservices-network
+    environment:
+      SERVER_PORT: 9191
+
+  config-server:
+    build:
+      context: ./config-server
+    ports:
+      - "8888:8888"
+    networks:
+      - microservices-network
+    environment:
+      SERVER_PORT: 8888
+
+  depatment-service:
+    container_name: department-service
+    build:
+      context: ./depatment-service
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - department-database
+      - rabbitmq
+    environment:
+      SERVER_PORT: 8080
+      SPRING_DATASOURCE_URL: jdbc:postgresql://department-database:5432/department_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: root
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
+    networks:
+      - microservices-network
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    networks:
+      - microservices-network
+    restart: always
+
+volumes:
+  department-postgres-data:
+
+networks:
+  microservices-network:
+    driver: bridge
