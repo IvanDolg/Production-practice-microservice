@@ -12,6 +12,8 @@ services:
       - organization-postgres-data:/var/lib/postgresql/data
     networks:
       - microservices-network
+    ports:
+       - "5433:5432"
 
   department-database:
     image: postgres:15
@@ -23,6 +25,8 @@ services:
       - department-postgres-data:/var/lib/postgresql/data
     networks:
       - microservices-network
+    ports:
+      - "5434:5432"
 
   employee-database:
     image: postgres:15
@@ -34,23 +38,20 @@ services:
       - employee-postgres-data:/var/lib/postgresql/data
     networks:
       - microservices-network
-
-  organization-service:
-    container_name: organization-service
-    build:
-      context: ./organization-service
-      dockerfile: Dockerfile
     ports:
-      - "8080:8080"
-    depends_on:
-      - organization-database
+      - "5435:5432"
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://organization-database:5432/organization_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: root
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
     networks:
-      microservices-network:
-    restart: on-failure
+      - microservices-network
+    restart: always
 
   service-registry:
     build:
@@ -82,43 +83,73 @@ services:
     environment:
       SERVER_PORT: 8888
 
-  employee-service:
-    container_name: employee-service
-    build:
-      context: ./employee-service
-      dockerfile: Dockerfile
-    ports:
-      - "8082:8082"
-    depends_on:
-      - employee-database
-    environment:
-      SERVER_PORT: 8082
-      SPRING_DATASOURCE_URL: jdbc:postgresql://employee-database:5432/employee_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: root
-    networks:
-      microservices-network:
-    restart: on-failure
-
-
   depatment-service:
     container_name: depatment-service
     build:
       context: ./depatment-service
       dockerfile: Dockerfile
     ports:
-      - "8081:8081"
+      - "8080:8080"
     depends_on:
       - department-database
+      - rabbitmq
     networks:
       - microservices-network
     environment:
-      - SERVER_PORT=8081
+      - SERVER_PORT=8080
       - SPRING_DATASOURCE_URL=jdbc:postgresql://department-database:5432/department_db
       - SPRING_DATASOURCE_USERNAME=postgres
       - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
 
+  organization-service:
+    container_name: organization-service
+    build:
+      context: ./organization-service
+      dockerfile: Dockerfile
+    ports:
+      - "8083:8083"
+    depends_on:
+      - organization-database
+      - rabbitmq
+    environment:
+      - SERVER_PORT=8083
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://organization-database:5432/organization_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+    networks:
+      microservices-network:
+    restart: on-failure
 
+  employee-service:
+    container_name: employee-service
+    build:
+      context: ./employee-service
+      dockerfile: Dockerfile
+    ports:
+      - "8081:8081"
+    depends_on:
+      - employee-database
+      - rabbitmq
+    environment:
+      - SERVER_PORT=8081
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://employee-database:5432/employee_db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=root
+      - SPRING_RABBITMQ_HOST=rabbitmq
+      - SPRING_RABBITMQ_PORT=5672
+      - SPRING_RABBITMQ_USERNAME=guest
+      - SPRING_RABBITMQ_PASSWORD=guest
+    networks:
+      microservices-network:
+    restart: on-failure
 
 volumes:
   organization-postgres-data:
